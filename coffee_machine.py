@@ -1,13 +1,14 @@
 MENU = {
     "espresso":
-    {
-        "ingredients":
         {
-            "water": 50,
-            "coffee": 18,
+            "ingredients":
+                {
+                    "water": 50,
+                    "milk": 0,
+                    "coffee": 18,
+                },
+            "cost": 1.5,
         },
-        "cost": 1.5,
-    },
     "latte": {
         "ingredients": {
             "water": 200,
@@ -26,43 +27,67 @@ MENU = {
     }
 }
 
-
 resources = {
     "water": 300,
     "milk": 200,
     "coffee": 100,
 }
 
-# Coin operated: penny: 1c, nickel: 5c, dime: 10c, quarter: 25c
-# must output an error if there isn't enough resources and ask again
-# 2 when ordering ask the user for how many quarters, dimes, nickels, pennies to be inserted
-# resources are reduced after each successful purchase
-# Feedback on successful purchase: here's your coffee, count all the coins up, subract the cost and output change
-# Feedback on insufficient funds: Not enough. Money refunded
-
-# using report keyword, output its resources: water, milk, coffee
-def report(resources):
-    water = resources['water']
-    milk = resources['milk']
-    coffee = resources['coffee']
-    return f"Water remaining {water}\nMilk remaining {milk}\nCoffee remaining {coffee}"
+def report():
+    """Show current resources"""
+    for item in resources:
+        if item in resources:
+            print(f"{item}: {resources[item]}")
 
 
-#check resources
-def check_resources_for(choice,MENU,resources):
-    if choice == 'espresso':
-        water = MENU['espresso']['ingredients']['water']
-        coffee = MENU['espresso']['ingredients']['coffee']
-        water_left = resources['water']
-        coffee_left = resources['coffee']
-        if water_left-water < 0 or coffee_left-coffee < 0:
-            return
+def check_resources_for(choice):
+    """Check if there is enough resources. If yes, subtract cost from resource pool and continue, if no, stop"""
+    drink = MENU[choice]
+    for item in resources:
+        if drink['ingredients'][item] > resources[item]:
+            return False
+    else:
+        for item in drink['ingredients']:
+            resources[item] -= drink['ingredients'][item]
+        return True
 
+
+def pay(choice):
+    """Input money, return change. If not enough, ask again to input more"""
+    cost = MENU[choice]['cost']
+    input_more_money = True
+    while input_more_money:
+        quarters = int(input("Please input quarters: ")) * 0.25
+        dimes = int(input("Please input quarters: ")) * 0.10
+        nickles = int(input("Please input quarters: ")) * 0.05
+        pennies = int(input("Please input quarters: ")) * 0.01
+        sum = quarters+dimes+nickles+pennies
+        if sum < cost:
+            print("Not enough coin. Please input at least $%.2f" % (cost))
+            input_more_money = True
+        else:
+            change = sum - cost
+            print("Your change $%.2f" % (change))
+            input_more_money = False
 
 
 # 1 asks what the user would like (espresso, latte, cappuccino)
-choice = input("What would you like to have? 'Espresso', 'Latte', or 'Cappuccino'? Type 'Report' to see resources \n").lower()
-if choice == 'report':
-    print(report(resources))
-elif choice == 'espresso':
-    check_resources_for(choice,MENU,resources)
+continue_process = True
+while continue_process:
+    choice = input(
+        "What would you like to have? 'Espresso', 'Latte', or 'Cappuccino'? Type 'Report' to see resources \n").lower()
+    if choice == 'report':
+        report()
+        continue_process = True
+    elif choice == 'espresso' or 'latte' or 'cappuccino':
+        continue_process = check_resources_for(choice)
+        if continue_process == True:
+            pay(choice)
+            print(f"Enjoy your {choice} for $%.2f" %(MENU[choice]['cost']))
+            print("Resources left over")
+            print(resources)
+            continue_process = True
+        else:
+            print("Not enough resources")
+            print(resources)
+            continue_process = False
