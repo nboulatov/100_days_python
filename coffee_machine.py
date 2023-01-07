@@ -79,7 +79,7 @@ while continue_process:
     if choice == 'report':
         report()
         continue_process = True
-    elif choice == 'espresso' or 'latte' or 'cappuccino':
+    elif choice == 'espresso' or choice == 'latte' or choice == 'cappuccino':
         continue_process = check_resources_for(choice)
         if continue_process == True:
             pay(choice)
