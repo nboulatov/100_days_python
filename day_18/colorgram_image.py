@@ -17,22 +17,36 @@ color_list = [(251, 251, 251), (229, 223, 225), (210, 2, 35), (198, 181, 3), (22
 
 timmy = Turtle()
 timmy.width(4)
-#timmy.speed(10)
+timmy.speed(0)
 timmy.shapesize(5, 5, 12)
 timmy.color("coral")
-# timmy.hideturtle()
-timmy.penup()
-timmy.goto(-600, -500)
-timmy.pendown()
 turtle.colormode(255)
+#timmy.hideturtle()
+
+y_coordinate = -500
+
+def go_to_location(y_coordinate):
+    timmy.penup()
+    timmy.goto(-600, y_coordinate)
+    timmy.pendown()
+
+# def rgb_color():
+#     r = random.randint(0, 255)
+#     g = random.randint(0, 255)
+#     b = random.randint(0, 255)
+#     timmy.color(r,g,b)
 
 def draw_dots():
-
-    for _ in range(5):
-        timmy.dot(20, turtle.pencolor())
+    for _ in range(10):
+        timmy.color(random.choice(color_list))
+        timmy.dot(20)
         timmy.penup()
         timmy.forward(50)
 
-draw_dots()
+while y_coordinate != 500:
+    go_to_location(y_coordinate)
+    draw_dots()
+    y_coordinate +=100
+
 screen = Screen()
 screen.exitonclick()
