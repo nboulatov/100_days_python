@@ -21,6 +21,12 @@ class Snake():
             new_turtle.goto(position)
             self.segments.append(new_turtle)
 
+    def add_snake(self):
+        new_turtle = Turtle("square")
+        new_turtle.color("white")
+        new_turtle.penup()
+        self.segments.append(new_turtle)
+
     def move(self):
         for seg_num in range(len(self.segments) - 1, 0, -1):
             new_x = self.segments[seg_num - 1].xcor()
